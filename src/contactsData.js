@@ -1,3 +1,23 @@
+/**
+ * FILE: src/contactsData.js
+ * -----------------------------------------------------------------------------
+ * DESCRIPTION:
+ * This file contains the initial, static data for the application. In a real-
+ * world application, this data would likely come from a database via a network
+ * request (an API call), but for this example, we are using a simple, hardcoded
+ * array of JavaScript objects.
+ *
+ * Each object in the array represents a single contact and has a unique `id`,
+ * a `name`, a `phone` number, and an `email` address.
+ *
+ * The `export` keyword makes the `contacts` array available for other files
+ * to import and use.
+ *
+ * RELATIONSHIP TO OTHER FILES:
+ * - `src/App.js`: Imports this `contacts` array to use as the initial state
+ *   for the `allContacts` state variable.
+ */
+
 export const contacts = [
   { id: 1, name: 'Alice Johnson', phone: '123-456-7890', email: 'alice@example.com' },
   { id: 2, name: 'Bob Smith', phone: '234-567-8901', email: 'bob@example.com' },
