@@ -42,6 +42,34 @@ main {
   border-radius: 4px;
 }
 
+/* Sort Controls Styling */
+.sort-controls {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sort-controls span {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.sort-controls button {
+  padding: 8px 12px;
+  margin: 0 5px;
+  font-size: 0.9em;
+  border: 1px solid #4a90e2;
+  background-color: #fff;
+  color: #4a90e2;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.sort-controls button:hover {
+  background-color: #4a90e2;
+  color: white;
+}
+
 /* Contact List Styling */
 .contact-list {
   display: grid;
@@ -57,6 +85,7 @@ main {
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
+  cursor: pointer;
 }
 
 .contact-item:hover {
@@ -76,15 +105,30 @@ main {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-  .contact-list {
-    grid-template-columns: 1fr;
-  }
-
   .App {
     padding: 10px;
   }
 
+  .App-header {
+    padding: 15px;
+  }
+
+  .App-header h1 {
+    font-size: 1.5em;
+  }
+
   main {
     padding: 10px;
+  }
+
+  .sort-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .contact-list {
+    grid-template-columns: 1fr;
   }
 }

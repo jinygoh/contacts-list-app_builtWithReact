@@ -13,11 +13,13 @@
 
 import React from 'react';
 
-// This component also destructures its props to get the `contact` object directly.
-const ContactItem = ({ contact }) => {
+// Destructure props to get the `contact` object and the `onItemClick` function.
+const ContactItem = ({ contact, onItemClick }) => {
   return (
-    // A container div for a single contact's information.
-    <div className="contact-item">
+    // Add the onClick event handler to the main div.
+    // When this div is clicked, it will call the onItemClick function, passing
+    // the specific contact object for this item as an argument.
+    <div className="contact-item" onClick={() => onItemClick(contact)}>
       {/* Display the contact's name. The curly braces `{}` are used in JSX */}
       {/* to embed JavaScript expressions, in this case, the value of `contact.name`. */}
       <h3>{contact.name}</h3>

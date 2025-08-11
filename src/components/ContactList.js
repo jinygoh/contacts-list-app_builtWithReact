@@ -18,9 +18,9 @@ import React from 'react';
 import ContactItem from './ContactItem';
 
 // This is a functional component defined as an arrow function.
-// It uses "destructuring" to directly access the `contacts` prop from the
-// props object. So, `{ contacts }` is a shorthand for `props.contacts`.
-const ContactList = ({ contacts }) => {
+// It uses "destructuring" to directly access the `contacts` and `onContactClick`
+// props from the props object.
+const ContactList = ({ contacts, onContactClick }) => {
   return (
     // A container div for the list of contacts.
     <div className="contact-list">
@@ -45,6 +45,8 @@ const ContactList = ({ contacts }) => {
           // The `contact` prop passes the entire contact object down to the
           // `ContactItem` component, so it has the data it needs to render.
           contact={contact}
+          // Pass the click handler function down to the item component.
+          onItemClick={onContactClick}
         />
       ))}
     </div>

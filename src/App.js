@@ -66,26 +66,39 @@ function App() {
   //    - It's initialized as an empty string.
   const [searchTerm, setSearchTerm] = useState('');
 
+  // 4. `sortType`: Holds the current sorting method.
+  const [sortType, setSortType] = useState('default');
 
-  // --- SIDE EFFECTS ---
-  // `useEffect` runs a function after every render, but we can control when it
-  // runs by providing a "dependency array".
-  useEffect(() => {
-    // This function will run whenever a variable in the dependency array changes.
 
-    // Filter the `allContacts` list.
-    const results = allContacts.filter(contact =>
-      // For each contact, check if their name (in lowercase) includes the
-      // search term (also in lowercase). This makes the search case-insensitive.
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  // --- DERIVED STATE ---
+  // Instead of using useEffect to update a separate state variable for filtered
+  // contacts, we can derive it directly during rendering. This is often cleaner.
 
-    // After filtering, update the `filteredContacts` state with the results.
-    // This will cause React to re-render the components that use this state
-    // (specifically, the `ContactList` component).
-    setFilteredContacts(results);
+  // 1. Filter contacts based on the search term.
+  const filteredContacts = allContacts.filter(contact =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  }, [searchTerm, allContacts]); // The dependency array. This effect runs ONLY when `searchTerm` or `allContacts` changes.
+  // 2. Sort the filtered contacts based on the sort type.
+  const sortedAndFilteredContacts = [...filteredContacts].sort((a, b) => {
+    if (sortType === 'name-asc') {
+      return a.name.localeCompare(b.name); // A-Z
+    }
+    if (sortType === 'name-desc') {
+      return b.name.localeCompare(a.name); // Z-A
+    }
+    return 0; // Default order
+  });
+
+
+  // --- EVENT HANDLERS ---
+  /**
+   * Handles the click event on a contact item.
+   * @param {object} contact - The contact object that was clicked.
+   */
+  const handleContactClick = (contact) => {
+    alert(`Name: ${contact.name}\nPhone: ${contact.phone}\nEmail: ${contact.email}`);
+  };
 
 
   // --- RENDER ---
@@ -103,10 +116,21 @@ function App() {
         {/* This allows the SearchBar to tell the App component when the search text changes. */}
         <SearchBar handleSearch={setSearchTerm} />
 
+        {/* Sorting controls */}
+        <div className="sort-controls">
+          <span>Sort by:</span>
+          <button onClick={() => setSortType('name-asc')}>Name (A-Z)</button>
+          <button onClick={() => setSortType('name-desc')}>Name (Z-A)</button>
+          <button onClick={() => setSortType('default')}>Default</button>
+        </div>
+
         {/* Render the ContactList component. */}
-        {/* We pass the `filteredContacts` state to it as a "prop" named `contacts`. */}
+        {/* We pass the derived `sortedAndFilteredContacts` state to it as a "prop". */}
         {/* This gives the ContactList the data it needs to display. */}
-        <ContactList contacts={filteredContacts} />
+        <ContactList
+          contacts={sortedAndFilteredContacts}
+          onContactClick={handleContactClick}
+        />
       </main>
     </div>
   );
