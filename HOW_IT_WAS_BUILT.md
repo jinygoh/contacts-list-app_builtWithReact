@@ -18,8 +18,7 @@ This command creates a new directory (`contact-list-app`) with all the necessary
 
 ### Step 2: Cleaning Up the Default Project
 
-Create React App provides a default template with a spinning React logo. The next step is to remove the boilerplate code you don't need.
-
+Create React App provides a default template. The next step is to remove the boilerplate code you don't need.
 -   Delete `src/logo.svg`.
 -   Clean up `src/App.js` to be a simple, empty component.
 -   Remove the boilerplate styles from `src/App.css`.
@@ -29,79 +28,74 @@ Create React App provides a default template with a spinning React logo. The nex
 ### Step 3: Creating the Static Data
 
 Before building components, it's helpful to have some data to display.
-
 -   Create a new file: `src/contactsData.js`.
--   In this file, create and export an array of contact objects, just like the one you see in the project. Each object should have a unique `id`, `name`, `phone`, and `email`.
+-   In this file, create and export an array of contact objects, just like the one you see in the project.
 
 ---
 
 ### Step 4: Building the Components (Bottom-Up)
 
-A good strategy is to build components from the smallest, most self-contained pieces upwards.
+A good strategy is to build components from the smallest pieces upwards.
 
-1.  **`ContactItem.js`:**
-    -   Create `src/components/ContactItem.js`.
-    -   Create a simple functional component that receives a single `contact` object as a prop.
-    -   Add JSX to display the contact's name, phone, and `email`.
-
-2.  **`ContactList.js`:**
-    -   Create `src/components/ContactList.js`.
-    -   This component will receive an array of `contacts` as a prop.
-    -   Use the `.map()` method to iterate over the `contacts` array and render a `ContactItem` for each one. Remember to add the `key` prop!
-
-3.  **`SearchBar.js`:**
-    -   Create `src/components/SearchBar.js`.
-    -   Add a simple `<input>` field. For now, it won't do anything.
+1.  **`ContactItem.js`:** Create a component to display a single contact.
+2.  **`ContactList.js`:** Create a component that maps over an array of contacts and renders a `ContactItem` for each one.
+3.  **`SearchBar.js`:** Create a component with a simple `<input>` field.
 
 ---
 
 ### Step 5: Assembling the Main App Component (`App.js`)
 
-Now it's time to put all the pieces together in `App.js`.
+Now, put all the pieces together in `App.js`.
+1.  **Import everything:** Import the components and the contact data.
+2.  **Initial State:** Use `useState` to store the original, complete list of contacts.
+3.  **Layout:** Add the components to the `return` statement to create the basic layout. Pass the contact data to `ContactList`.
 
-1.  **Import Components:** Import `ContactList` and `SearchBar` into `App.js`.
-2.  **Import Data:** Import the `contacts` data from `src/contactsData.js`.
-3.  **Initial State:** Use the `useState` hook to store the list of contacts.
-    ```jsx
-    const [allContacts] = useState(contactsData);
-    ```
-4.  **Layout:** Add the imported components to the `return` statement of `App.js` to create the basic layout. Pass the contact data to `ContactList`.
-    ```jsx
-    <div className="App">
-      <h1>Contact List</h1>
-      <SearchBar />
-      <ContactList contacts={allContacts} />
-    </div>
-    ```
 At this point, you would have a non-interactive app that displays the full list of contacts.
 
 ---
 
-### Step 6: Adding Search Functionality (State and Effects)
+### Step 6: Adding Search Functionality
 
-This is the final and most complex part, involving state management and effects.
-
-1.  **Add State for Search:** In `App.js`, add two more `useState` hooks:
-    -   One for the `searchTerm` (the text in the input).
-    -   One for the `filteredContacts` (the list that will be displayed).
+To make the search bar work, you need to:
+1.  **Add State for Search:** In `App.js`, add a state variable to hold the user's search query.
     ```jsx
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredContacts, setFilteredContacts] = useState(allContacts);
     ```
-
-2.  **Lift State Up:** Pass the `setSearchTerm` function down to the `SearchBar` as a prop (`handleSearch`). In `SearchBar`, call this function in the `onChange` event handler of the input.
-
-3.  **Create the Filtering Logic:** In `App.js`, use the `useEffect` hook.
-    -   This effect will have `searchTerm` as a dependency.
-    -   Inside the effect, write the logic to filter `allContacts` based on the `searchTerm`.
-    -   Call `setFilteredContacts` with the result of the filtering.
-
-4.  **Connect to the List:** In the JSX of `App.js`, make sure you are passing the `filteredContacts` (the state variable) to `ContactList`, not the original `allContacts`.
+2.  **Lift State Up:** Pass the `setSearchTerm` function down to `SearchBar` as a prop. In `SearchBar`, call this function in the `onChange` event handler.
+3.  **Derive the Filtered List:** Instead of using `useEffect`, calculate the filtered list directly in the component body. This is simpler and less prone to bugs.
+    ```jsx
+    // in App.js
+    const filteredContacts = allContacts.filter(contact =>
+      contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    ```
+4.  **Connect to the List:** Pass the newly calculated `filteredContacts` array to the `ContactList` component.
 
 ---
 
-### Step 7: Styling
+### Step 7: Adding Optional Features (Sorting and Clicking)
 
-The final step is to add CSS to make the application look good. This would involve adding styles to `App.css` and `index.css` to style the components, layout, and typography.
+To add the optional features, you would:
 
-And that's it! By following these steps, you can build a fully functional, interactive React application.
+1.  **Implement Sorting:**
+    -   Add a new state in `App.js` to track the sort order: `const [sortType, setSortType] = useState('default');`
+    -   Add buttons to the UI that call `setSortType` with different values (e.g., 'name-asc').
+    -   Expand the derived state logic: first filter, then sort the result of the filtering. Use the `.sort()` method on the `filteredContacts` array.
+    -   Pass the final `sortedAndFilteredContacts` array to the `ContactList`.
+
+2.  **Implement Click-for-Details:**
+    -   Create a handler function in `App.js`: `const handleContactClick = (contact) => { ... }`.
+    -   Pass this function as a prop all the way down: from `App` to `ContactList`, and then from `ContactList` to each `ContactItem`.
+    -   In `ContactItem`, add an `onClick` event to the main `div` that calls the function it received via props.
+
+---
+
+### Step 8: Styling
+
+The final step is to add CSS to make the application look good.
+-   Style the main components, layout, and typography in `App.css` and `index.css`.
+-   Add styles for the new sort control buttons.
+-   Add a `cursor: pointer` to the contact items to show they are clickable.
+-   Add `@media` queries to make the layout responsive on different screen sizes.
+
+And that's it! By following these steps, you can build a fully functional, interactive, and polished React application.

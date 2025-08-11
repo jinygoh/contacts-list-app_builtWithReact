@@ -36,47 +36,52 @@ JSX (JavaScript XML) lets you write what looks like HTML directly in your JavaSc
 // This looks like HTML, but it's actually JSX.
 // The curly braces `{}` let you embed JavaScript variables.
 return (
-  <div className="contact-item">
+  <div className="contact-item" onClick={() => onItemClick(contact)}>
     <h3>{contact.name}</h3>
     <p>{contact.phone}</p>
     <p>{contact.email}</p>
   </div>
 );
 ```
-**Important:** Notice it's `className` instead of `class`. This is one of the few differences from regular HTML.
+**Important:** Notice it's `className` instead of `class`, and that we can add event handlers like `onClick` directly to our JSX elements.
 
 ---
 
-## 4. Props: Passing Data to Components
+## 4. Props: Passing Data and Functions to Components
 
-How do you get data into a component? You pass it down from a parent component using **props** (short for "properties").
+How do you get data into a component? You pass it down from a parent component using **props** (short for "properties"). You can pass down data (like an array of contacts) and functions (like a click handler).
 
-Think of props as function arguments. The parent component "calls" the child component and passes it some data.
+**Example from `src/App.js` and its children:**
 
-**Example from `src/App.js` and `src/components/ContactList.js`:**
-
-1.  In `App.js`, we render `ContactList` and pass it our list of contacts:
+1.  In `App.js`, we render `ContactList` and pass it both the list of contacts to display and a function to handle clicks:
     ```jsx
     // in App.js
-    <ContactList contacts={filteredContacts} />
+    <ContactList
+      contacts={sortedAndFilteredContacts}
+      onContactClick={handleContactClick}
+    />
     ```
-    Here, `contacts` is the prop name, and `filteredContacts` is the data (an array).
 
-2.  In `ContactList.js`, we receive that data:
+2.  In `ContactList.js`, we receive those props and then pass the `onContactClick` function further down to each `ContactItem`:
     ```jsx
     // in ContactList.js
-    const ContactList = ({ contacts }) => {
-      // ... now we can use the `contacts` array here ...
+    const ContactList = ({ contacts, onContactClick }) => {
+      //...
+      <ContactItem
+        key={contact.id}
+        contact={contact}
+        onItemClick={onContactClick} // Passing the function down again
+      />
+      //...
     };
     ```
-
-**Key Idea:** Data flows down from parent to child via props. This is called **one-way data flow**.
+This pattern of passing props through intermediate components is very common.
 
 ---
 
 ## 5. State: A Component's Memory
 
-What if a component needs to remember something that can change over time, like what a user has typed into an input field? For this, we use **state**.
+What if a component needs to remember something that can change over time, like what a user has typed or the current sort order? For this, we use **state**.
 
 State is managed with a special function (a "Hook") called `useState`.
 
@@ -84,69 +89,86 @@ State is managed with a special function (a "Hook") called `useState`.
 ```jsx
 // in App.js
 function App() {
-  // This line creates a state variable called `searchTerm`.
-  // - `searchTerm` holds the current value.
-  // - `setSearchTerm` is the function we use to UPDATE the value.
-  // - `useState('')` initializes it to an empty string.
+  // State for the search text
   const [searchTerm, setSearchTerm] = useState('');
-
-  // ... later in the file ...
+  // State for the sort order
+  const [sortType, setSortType] = useState('default');
+  // ...
 }
 ```
-When you call `setSearchTerm('new value')`, React does two things:
-1.  It updates the `searchTerm` variable.
+When you call `setSearchTerm('new value')` or `setSortType('name-asc')`, React does two things:
+1.  It updates the corresponding state variable.
 2.  It **re-renders** the component (and its children) to reflect the new data on the screen. This is the magic of React!
 
 ---
 
 ## 6. Handling Events and Lifting State Up
 
-How does the `SearchBar` tell the `App` component that the user has typed something?
+How does a child component tell a parent component that something happened? For example, the user clicks a button or types in a search field. This is done by passing functions down as props.
 
-This is a common pattern in React called "lifting state up."
+**Example 1: The Search Bar**
+The `App` component passes `setSearchTerm` down to `SearchBar`, allowing the `SearchBar` to "lift up" the new text value to its parent.
 
-1.  The state (`searchTerm`) lives in the parent component (`App.js`).
-2.  The parent passes the *setter function* (`setSearchTerm`) down to the child as a prop.
-3.  The child component (`SearchBar.js`) calls that function whenever the `onChange` event happens on the input field.
-
-**Example from `src/components/SearchBar.js`:**
-```jsx
-// in SearchBar.js
-const SearchBar = ({ handleSearch }) => { // `handleSearch` is actually the `setSearchTerm` function
-  return (
-    <input
-      type="text"
-      placeholder="Search by name..."
-      // When the user types, call the function from the parent.
-      onChange={e => handleSearch(e.target.value)}
-    />
-  );
-};
-```
-This way, the parent is in control of the state, and the child just reports back when things happen.
+**Example 2: Clicking a Contact Item**
+This is an even better example, as the function is passed down through two levels.
+1.  **`App.js` defines the function:**
+    ```jsx
+    const handleContactClick = (contact) => {
+      alert(`Name: ${contact.name}...`);
+    };
+    ```
+2.  **`App.js` passes it to `ContactList.js`:**
+    ```jsx
+    <ContactList onContactClick={handleContactClick} />
+    ```
+3.  **`ContactList.js` passes it to `ContactItem.js`:**
+    ```jsx
+    <ContactItem onItemClick={onContactClick} />
+    ```
+4.  **`ContactItem.js` calls the function:**
+    ```jsx
+    <div onClick={() => onItemClick(contact)}>...</div>
+    ```
+When the `div` is clicked, the original `handleContactClick` function in `App.js` is executed with the correct contact data!
 
 ---
 
-## 7. Effects: Handling Side Effects with `useEffect`
+## 7. Derived State vs. Effects
 
-What if you want to run some code *in response* to a state change? For example, "whenever the `searchTerm` changes, I need to re-filter the contact list."
+Previously, this app used a `useEffect` hook to update the filtered list of contacts. The new version uses a more modern and often simpler pattern: **deriving state**.
 
-This is a "side effect," and we handle it with the `useEffect` Hook.
+Instead of storing the filtered/sorted list in a separate state variable, we calculate it directly from our "source of truth" (`allContacts`, `searchTerm`, `sortType`) every time the component renders.
+
+**Why is this better?**
+-   It prevents bugs where state variables can get out of sync.
+-   The code is often easier to read because the logic that creates the displayed list is all in one place.
+-   It avoids unnecessary re-renders that can be caused by `useEffect`.
 
 **Example from `src/App.js`:**
 ```jsx
 // in App.js
-useEffect(() => {
-  // This code runs whenever a variable in the dependency array changes.
-  const results = allContacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  setFilteredContacts(results);
 
-}, [searchTerm, allContacts]); // <-- This is the dependency array.
+// 1. Filter first, based on the searchTerm state.
+const filteredContacts = allContacts.filter(contact =>
+  contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+// 2. Then, sort the *result* of the filtering, based on sortType state.
+const sortedAndFilteredContacts = [...filteredContacts].sort((a, b) => {
+  if (sortType === 'name-asc') {
+    return a.name.localeCompare(b.name);
+  }
+  if (sortType === 'name-desc') {
+    return b.name.localeCompare(a.name);
+  }
+  return 0;
+});
+
+// 3. Finally, pass the result to the list component.
+<ContactList contacts={sortedAndFilteredContacts} ... />
 ```
-This `useEffect` is "listening" for changes to `searchTerm`. When `searchTerm` changes, the effect runs, filters the list, and updates the `filteredContacts` state, causing the list on the screen to update.
+This flow is predictable and easy to follow. The UI is always a direct result of the current state.
 
 ---
 
-This covers the core concepts you see in action in this app! By understanding components, props, state, and effects, you have the foundation for building almost anything in React.
+This covers all the core concepts you see in action in this app! By understanding components, props, state, event handling, and derived state, you have the foundation for building almost anything in React.
