@@ -7,8 +7,8 @@
  * display the data it is given.
  *
  * RELATIONSHIP TO OTHER FILES:
- * - `src/components/ContactList.js`: This component is rendered by
- *   `ContactList.js`. It receives an individual `contact` object as a prop.
+ * - `src/components/ContactList.jsx`: This component is rendered by
+ *   `ContactList.jsx`. It receives an individual `contact` object as a prop.
  */
 
 import React from 'react';
@@ -33,5 +33,5 @@ const ContactItem = ({ contact, onItemClick }) => {
   );
 };
 
-// Export the component so it can be imported by ContactList.js.
+// Export the component so it can be imported by ContactList.jsx.
 export default ContactItem;

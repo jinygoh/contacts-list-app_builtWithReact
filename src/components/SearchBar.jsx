@@ -8,8 +8,8 @@
  * by calling a function passed down through props.
  *
  * RELATIONSHIP TO OTHER FILES:
- * - `src/App.js`: This component is rendered by `App.js`. It receives the
- *   `setSearchTerm` function from `App.js` as a prop named `handleSearch`.
+ * - `src/App.jsx`: This component is rendered by `App.jsx`. It receives the
+ *   `setSearchTerm` function from `App.jsx` as a prop named `handleSearch`.
  */
 
 import React from 'react';

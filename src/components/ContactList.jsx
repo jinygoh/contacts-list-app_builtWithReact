@@ -7,15 +7,15 @@
  * logic. It simply receives a list of contacts (via props) and renders them.
  *
  * RELATIONSHIP TO OTHER FILES:
- * - `src/App.js`: This component is rendered by `App.js` and receives the
- *   `filteredContacts` array as a prop named `contacts`.
- * - `src/components/ContactItem.js`: For each contact in its `contacts` prop,
+ * - `src/App.jsx`: This component is rendered by `App.jsx` and receives the
+ *   `contacts` array and an `onContactClick` function as props.
+ * - `src/components/ContactItem.jsx`: For each contact in its `contacts` prop,
  *   it renders a `ContactItem` component, passing the individual contact's
- *   data down to it.
+ *   data and the click handler down to it.
  */
 
 import React from 'react';
-import ContactItem from './ContactItem';
+import ContactItem from './ContactItem.jsx';
 
 // This is a functional component defined as an arrow function.
 // It uses "destructuring" to directly access the `contacts` and `onContactClick`
@@ -53,5 +53,5 @@ const ContactList = ({ contacts, onContactClick }) => {
   );
 };
 
-// Export the component so it can be imported by App.js.
+// Export the component so it can be imported by App.jsx.
 export default ContactList;

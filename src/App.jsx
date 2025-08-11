@@ -9,11 +9,11 @@
  * for handling user interactions, like searching.
  *
  * RELATIONSHIP TO OTHER FILES:
- * - `src/index.js`: This file is rendered into the DOM by `index.js`.
+ * - `src/index.jsx`: This file is rendered into the DOM by `index.jsx`.
  * - `src/contactsData.js`: It imports the initial list of contacts from this file.
- * - `src/components/ContactList.js`: It renders the ContactList component and
+ * - `src/components/ContactList.jsx`: It renders the ContactList component and
  *   passes the list of contacts to it as a "prop".
- * - `src/components/SearchBar.js`: It renders the SearchBar component and gives
+ * - `src/components/SearchBar.jsx`: It renders the SearchBar component and gives
  *   it a function to call whenever the user types in the search box.
  * - `src/App.css`: It imports its own specific styles from this file.
  */
@@ -23,17 +23,17 @@
 // - `useState` is a "Hook" that lets you add state (data that can change) to
 //   functional components.
 // - `useEffect` is another "Hook" that lets you perform side effects in your
-//   components, such as fetching data or, in this case, re-calculating the
-//   filtered list of contacts whenever the search term changes.
-import React, { useState, useEffect } from 'react';
+//   components. This project has been refactored to use derived state instead
+//   of useEffect for filtering and sorting.
+import React, { useState } from 'react';
 
 // Import the initial list of contacts from our local data file.
 // We are renaming `contacts` to `contactsData` here to make it clearer.
-import { contacts as contactsData } from './contactsData';
+import { contacts as contactsData } from './contactsData.js';
 
 // Import the other components that this App component will use.
-import ContactList from './components/ContactList';
-import SearchBar from './components/SearchBar';
+import ContactList from './components/ContactList.jsx';
+import SearchBar from './components/SearchBar.jsx';
 
 // Import the stylesheet for this component.
 import './App.css';
@@ -137,5 +137,5 @@ function App() {
 }
 
 // Export the App component so that it can be imported and used by other files,
-// specifically `src/index.js`.
+// specifically `src/index.jsx`.
 export default App;

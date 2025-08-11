@@ -5,13 +5,12 @@
  * This is the top-level entry point for the entire React application. Its primary
  * job is to render the main `App` component into the actual DOM in the browser.
  *
- * It acts as the bridge between the React component world and the HTML file
- * (`public/index.html`).
+ * It acts as the bridge between the React component world and the root `index.html` file.
  *
  * RELATIONSHIP TO OTHER FILES:
- * - `public/index.html`: This file finds the `<div id="root"></div>` element
+ * - `index.html`: This file finds the `<div id="root"></div>` element
  *   in `index.html` and injects the entire React application into it.
- * - `src/App.js`: It imports the main `App` component and renders it.
+ * - `src/App.jsx`: It imports the main `App` component and renders it.
  * - `src/index.css`: It imports global styles that apply to the entire application.
  */
 
@@ -23,10 +22,8 @@ import ReactDOM from 'react-dom/client';
 
 // Import global styles.
 import './index.css';
-// Import the main App component.
-import App from './App';
-// `reportWebVitals` is a function used for measuring app performance.
-import reportWebVitals from './reportWebVitals';
+// Import the main App component. Note the .jsx extension.
+import App from './App.jsx';
 
 
 // 1. Find the root DOM node.
@@ -52,7 +49,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// The `reportWebVitals` function can be used to measure the performance of your
-// app. This is optional and can be removed.
-reportWebVitals();
