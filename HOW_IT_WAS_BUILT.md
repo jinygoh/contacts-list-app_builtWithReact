@@ -1,18 +1,18 @@
-# How This App Was Built: A Step-by-Step Guide
+# How This App Was Built: A Step-by-Step Guide (Vue Edition)
 
-This document outlines the likely steps a developer would take to build this Contact List application from scratch using modern tools like Vite.
+This document outlines the likely steps a developer would take to build this Contact List application from scratch using modern tools like Vite and Vue.
 
 ---
 
 ### Step 1: Project Setup with Vite
 
-The fastest way to start a modern React project is with **Vite**.
+The fastest way to start a modern Vue project is with **Vite**.
 
 You would run this command in your terminal:
 ```bash
-npm create vite@latest contact-list-app -- --template react
+npm create vite@latest contact-list-app -- --template vue
 ```
-This command creates a new directory (`contact-list-app`) with a minimal, fast, and pre-configured React setup. After creation, navigate into the directory and install the dependencies:
+This command creates a new directory (`contact-list-app`) with a minimal, fast, and pre-configured Vue setup. After creation, navigate into the directory and install the dependencies:
 ```bash
 cd contact-list-app
 npm install
@@ -22,11 +22,11 @@ npm install
 
 ### Step 2: Understanding the Vite Project Structure
 
-Vite's structure is slightly different from older tools like Create React App:
--   `index.html` is in the root directory, not in `public/`.
--   `src/main.jsx` is the entry point (instead of `src/index.js`). We have renamed it to `src/index.jsx` in this project for clarity.
--   Component files use the `.jsx` extension by default.
--   The `public/` directory is only for static assets that don't get processed by the build tool (like `favicon.ico`).
+Vite's structure is clean and modern:
+-   `index.html` is in the root directory.
+-   `src/main.js` is the entry point for the application.
+-   Components are written as Single-File Components (SFCs) with a `.vue` extension.
+-   The `public/` directory is for static assets that don't get processed by the build tool.
 
 To start the development server, you run `npm run dev`.
 
@@ -44,18 +44,18 @@ Before building components, it's helpful to have some data to display.
 
 A good strategy is to build components from the smallest pieces upwards.
 
-1.  **`ContactItem.jsx`:** Create a component to display a single contact.
-2.  **`ContactList.jsx`:** Create a component that maps over an array of contacts and renders a `ContactItem` for each one.
-3.  **`SearchBar.jsx`:** Create a component with a simple `<input>` field.
+1.  **`ContactItem.vue`:** Create a component to display a single contact. It receives the contact data as a `prop` and emits a click event.
+2.  **`SearchBar.vue`:** Create a component with a simple `<input>` field that emits an `input` event.
+3.  **`ContactList.vue`:** Create a component that uses `v-for` to loop over an array of contacts and renders a `ContactItem` for each one.
 
 ---
 
-### Step 5: Assembling the Main App Component (`App.jsx`)
+### Step 5: Assembling the Main App Component (`App.vue`)
 
-Now, put all the pieces together in `App.jsx`.
-1.  **Import everything:** Import the components and the contact data.
-2.  **Initial State:** Use `useState` to store the original, complete list of contacts.
-3.  **Layout:** Add the components to the `return` statement to create the basic layout. Pass the contact data to `ContactList`.
+Now, put all the pieces together in `App.vue`.
+1.  **Import everything:** Import the components and the contact data inside the `<script setup>` block.
+2.  **Initial State:** Use `ref` to create reactive state variables for the search term and sort type.
+3.  **Layout:** Add the components to the `<template>` section to create the basic layout. Bind the contact data to `ContactList` using props.
 
 At this point, you would have a non-interactive app that displays the full list of contacts.
 
@@ -64,17 +64,16 @@ At this point, you would have a non-interactive app that displays the full list 
 ### Step 6: Adding Search Functionality
 
 To make the search bar work, you need to:
-1.  **Add State for Search:** In `App.jsx`, add a state variable to hold the user's search query.
-    ```jsx
-    const [searchTerm, setSearchTerm] = useState('');
+1.  **Add State for Search:** In `App.vue`, create a `ref` for the search query.
+    ```js
+    const searchTerm = ref('');
     ```
-2.  **Lift State Up:** Pass the `setSearchTerm` function down to `SearchBar` as a prop. In `SearchBar`, call this function in the `onChange` event handler.
-3.  **Derive the Filtered List:** Calculate the filtered list directly in the component body.
-    ```jsx
-    // in App.jsx
-    const filteredContacts = allContacts.filter(/*...*/);
+2.  **Listen for Events:** Listen for the `search` event from the `SearchBar` component and update the `searchTerm` ref.
+3.  **Create a Computed Property:** Create a `computed` property that filters the contact list based on the `searchTerm`.
+    ```js
+    const filteredContacts = computed(() => allContacts.value.filter(/*...*/));
     ```
-4.  **Connect to the List:** Pass the newly calculated `filteredContacts` array to the `ContactList` component.
+4.  **Connect to the List:** Bind the `filteredContacts` computed property to the `ContactList` component.
 
 ---
 
@@ -83,15 +82,13 @@ To make the search bar work, you need to:
 To add the optional features, you would:
 
 1.  **Implement Sorting:**
-    -   Add a new state in `App.jsx` to track the sort order: `const [sortType, setSortType] = useState('default');`
-    -   Add buttons to the UI that call `setSortType`.
-    -   Expand the derived state logic: first filter, then sort the result.
-    -   Pass the final `sortedAndFilteredContacts` array to the `ContactList`.
+    -   Add a new `ref` in `App.vue` to track the sort order: `const sortType = ref('default');`
+    -   Add buttons to the UI that call a method to update `sortType`.
+    -   Expand the `computed` property: first filter, then sort the result based on `sortType`.
 
 2.  **Implement Click-for-Details:**
-    -   Create a handler function in `App.jsx`: `const handleContactClick = (contact) => { ... }`.
-    -   Pass this function as a prop down through `ContactList` to each `ContactItem`.
-    -   In `ContactItem`, add an `onClick` event to the main `div`.
+    -   Create a handler method in `App.vue`: `const handleContactClick = (contact) => { ... }`.
+    -   Listen for the `contactClick` event from the `ContactList` component.
 
 ---
 
@@ -103,4 +100,4 @@ The final step is to add CSS to make the application look good.
 -   Style all components in `src/App.css` using the CSS variables for a consistent, modern, dark look.
 -   Add `@media` queries to make the layout responsive.
 
-And that's it! By following these steps, you can build a fully functional, interactive, and polished React application with Vite.
+And that's it! By following these steps, you can build a fully functional, interactive, and polished Vue application with Vite.
