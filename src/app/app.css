@@ -1,0 +1,22 @@
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+main {
+  width: 100%;
+}

@@ -1,16 +1,14 @@
 # Manual Frontend Verification Instructions
 
-This document provides the steps to manually verify the latest changes to the application, which include the migration to the Vite build tool and a complete visual redesign to a modern dark theme.
+This document provides the steps to manually verify the application after its migration from React to Angular.
 
 ## Why is this necessary?
 
-I was unable to complete the final automated visual verification step using Playwright. The testing environment encountered networking errors (`net::ERR_CONNECTION_REFUSED`) and reported a large number of missing system dependencies for running browsers, which prevented the verification script from executing successfully.
-
-Therefore, this manual check is crucial to ensure that all the recent changes work as expected and that the new dark theme is applied correctly.
+A manual check is crucial to ensure that all features of the original application were successfully re-implemented in Angular and that the visual appearance (the dark theme) has been preserved.
 
 ## How to Verify
 
-Please follow these steps to run the application and check the new features.
+Please follow these steps to run the application and check the features.
 
 ### Step 1: Install Dependencies
 
@@ -21,15 +19,15 @@ npm install
 
 ### Step 2: Start the Development Server
 
-Run the following command to start the Vite development server:
+Run the following command to start the Angular development server:
 ```bash
-npm run dev
+ng serve
 ```
-The terminal will output the local URL where the application is running. It will likely be **http://localhost:5173/**.
+The terminal will output the local URL where the application is running. It will likely be **http://localhost:4200/**.
 
 ### Step 3: Open and Verify in Browser
 
-Open the URL from the previous step in your web browser. You should now see the redesigned Contact List application.
+Open the URL from the previous step in your web browser. You should now see the Contact List application with its dark theme.
 
 Please check the following:
 
@@ -42,6 +40,7 @@ Please check the following:
 2.  **✅ Search Functionality:**
     -   Type a name (e.g., "Alice") into the search bar.
     -   Does the list filter correctly to show only the matching contact(s)?
+    -   Clear the search bar. Does the full list reappear?
 
 3.  **✅ Sorting Functionality:**
     -   Click the "Name (A-Z)" button. Does the list sort alphabetically?
@@ -52,4 +51,4 @@ Please check the following:
     -   Click on any contact card.
     -   Does a browser alert pop up displaying that contact's name, phone, and email?
 
-If all of these checks pass, the migration and redesign were successful. Thank you for your help in performing this final verification step!
+If all of these checks pass, the migration to Angular was successful.

@@ -1,0 +1,14 @@
+<div class="app-container">
+  <header class="app-header">
+    <h1>Contact List</h1>
+    <app-search-bar (searchTermChange)="onSearchTermChange($event)"></app-search-bar>
+    <div class="sort-buttons">
+      <button (click)="onSortChange('default')">Default</button>
+      <button (click)="onSortChange('name-asc')">Name (A-Z)</button>
+      <button (click)="onSortChange('name-desc')">Name (Z-A)</button>
+    </div>
+  </header>
+  <main>
+    <app-contact-list [contacts]="filteredContacts" (contactClick)="onContactClick($event)"></app-contact-list>
+  </main>
+</div>
